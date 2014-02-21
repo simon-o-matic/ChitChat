@@ -1,0 +1,53 @@
+<html>
+<head>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="jquery-2.1.0.min.js"></script>
+
+  <style>
+    #messages {
+      border: 5px;
+      width: 70%;
+      height: 80%;
+      border-style: dashed;
+      border-color: black
+    }
+
+    #msg {
+      size: 60;
+      length: 50;
+    }
+
+    body {
+      background-color: wheat;
+    }
+
+  </style>
+</head>
+
+<body>
+
+
+<input id=msg type=text> <input id='send' type=button value="Send Message">
+
+<div id=messages />
+
+<script>
+  var socket = io.connect('http://localhost');
+
+  socket.on('message', function (data) {
+    $("#messages").append("<div>" + data.username + ">> " + data.message + "</div>");
+  });
+
+  socket.on('user_arrived', function (data) {
+    $("#messages").append("<div><b>" + data.username + "</b> has joined.");
+  });
+  
+  $("#send").click(function (e) {
+    socket.emit("message", $("#msg").val());
+    $("#msg").val(" ");
+  });
+</script>
+
+</body>
+</html>
