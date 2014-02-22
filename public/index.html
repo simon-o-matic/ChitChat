@@ -55,7 +55,9 @@ Login: <input id=username type=text> <input id='login' type=button value="Login"
     $("#msg").val(" ");
   });
   $("#login").click(function (e) {
-    socket.emit("login", {username: $("#username").val(), password: prompt('password')});
+    socket.emit("login", {username: $("#username").val(), password: prompt('password')}, function (result) {
+      alert(result);
+    });
   });
 </script>
 

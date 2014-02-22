@@ -28,15 +28,33 @@ io.sockets.on('connection', function (socket) {
   	})
 	});
 
- 	socket.on('login', function (credentials) {
+ 	socket.on('login', function (credentials, fn) {
     console.log("login of " + credentials.username + " from " + socket.handshake.address.address + ":" + socket.handshake.address.port);
+    
+    // check for valid credentials
     if (secrets[credentials.username] != credentials.password) {
-      return 403;
+      fn(403);
+      return;
     }
-    chitters[credentials.username] = socket; 
-    console.log(credentials.username  + " + logged in. Total users: " + Object.keys(chitters).length);
-    io.sockets.emit("arrival", {username : credentials.username });
-    socket.set('name', credentials.username );
+
+    // check if this socket has already logged in
+    socket.get('username', function (err, name) {
+      if (name) {
+        // already logged in, so switch the name
+        var existingSocket = chitters[name];
+        delete chitters[name];
+        chitters[credentials.username] = existingSocket;
+        io.sockets.emit("switcharoo", {oldname: name, newname: credentials.username });
+        fn(200);
+      } else {
+        // new login
+        chitters[credentials.username] = socket; 
+        console.log(credentials.username  + " + logged in. Total users: " + Object.keys(chitters).length);
+        io.sockets.emit("arrival", {username : credentials.username });
+        socket.set('username', credentials.username );
+        fn(200);    
+      }
+    });
 	});
 
 	socket.on('disconnect', function () {
@@ -48,6 +66,7 @@ io.sockets.on('connection', function (socket) {
     });
 	});
 
+  // helper function to send message to all "logged in" users
   function broadcast(channel, message) {
     for (var s in chitters) {
       chitters[s].emit(channel, message)
