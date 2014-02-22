@@ -7,33 +7,50 @@ server.listen(8090);
 
 app.use(express.static(__dirname + '/public'));
 
-//app.get('/', function (req, res) {
- // res.sendfile(__dirname + '/index.html');
-//});
+var secrets = {
+  'gabe': 'cello',
+  'isaac': 'fatty',
+  'paddy': 'hawksbeast',
+  'lochy': 'catan'
+}
 
 var chitters = {};
 
 io.sockets.on('connection', function (socket) {
-	//chitters[socket.id] = socket; // save the name
-  
-  socket.broadcast.emit("user_arrive", "Someone arrived..");
+  socket.broadcast.emit("lurker", socket.handshake.address.address + ":" + socket.handshake.address.port);
 
   socket.on('message', function (data) {
   	socket.get('username', function (err, name) {
-    	console.log(name + ">> " + data);
-		  socket.broadcast.emit('message', {username: name, message: data});    		
+     if (name) {
+      	console.log(name + ">> " + data);
+        broadcast("message", {username: name, message: data});
+      }
   	})
 	});
 
- 	socket.on('login', function (name) {
-    socket.set('username', name, function (err, name) {
-		  socket.broadcast.emit('user_arrived', {username: name, message: data});    		
-    });
+ 	socket.on('login', function (credentials) {
+    console.log("login of " + credentials.username + " from " + socket.handshake.address.address + ":" + socket.handshake.address.port);
+    if (secrets[credentials.username] != credentials.password) {
+      return 403;
+    }
+    chitters[credentials.username] = socket; 
+    console.log(credentials.username  + " + logged in. Total users: " + Object.keys(chitters).length);
+    io.sockets.emit("arrival", {username : credentials.username });
+    socket.set('name', credentials.username );
 	});
 
 	socket.on('disconnect', function () {
    socket.get('username', function (err, name) {
-      socket.broadcast.emit('user_left', name);       
+      delete chitters[name];
+      console.log(name + "left. Total users: " + Object.keys(chitters).length);
+      var u = name || "Lurker";
+      io.sockets.emit("departure", {username: u});
     });
 	});
+
+  function broadcast(channel, message) {
+    for (var s in chitters) {
+      chitters[s].emit(channel, message)
+    }
+  }
 });

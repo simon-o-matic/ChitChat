@@ -14,8 +14,7 @@
     }
 
     #msg {
-      size: 60;
-      length: 50;
+      background-color: yellow;
     }
 
     body {
@@ -27,8 +26,10 @@
 
 <body>
 
-
-<input id=msg type=text> <input id='send' type=button value="Send Message">
+<div id=login_page>
+Login: <input id=username type=text> <input id='login' type=button value="Login">
+</div>
+<input size=50 id=msg type=text> <input id='send' type=button value="Send">
 
 <div id=messages />
 
@@ -36,16 +37,25 @@
   var socket = io.connect('http://localhost');
 
   socket.on('message', function (data) {
-    $("#messages").append("<div>" + data.username + ">> " + data.message + "</div>");
+    $("#messages").append("<div><b>" + data.username + "</b>>> " + data.message + "</div>");
   });
 
-  socket.on('user_arrived', function (data) {
-    $("#messages").append("<div><b>" + data.username + "</b> has joined.");
+  socket.on('arrival', function (data) {
+    $("#messages").append("<div><b>" + data.username + "</b> has swankered in for a chat.");
+  });
+  socket.on('lurker', function (data) {
+    $("#messages").append("<div>There is a new lurker in the house... (" + data + ")</div>");
+  });
+  socket.on('departure', function (data) {
+    $("#messages").append("<div><b>" + data.username + "</b> has left the building.");
   });
   
   $("#send").click(function (e) {
     socket.emit("message", $("#msg").val());
     $("#msg").val(" ");
+  });
+  $("#login").click(function (e) {
+    socket.emit("login", {username: $("#username").val(), password: prompt('password')});
   });
 </script>
 
