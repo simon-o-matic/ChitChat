@@ -37,17 +37,27 @@ io.sockets.on('connection', function (socket) {
       return;
     }
 
-    // check if this socket has already logged in
+    // check if logged in somewhere else, thats fine just move them
+    if (chitters[credentials.username]) {
+      var oldSocket = chitters[credentials.username];
+      chitters[credentials.username] = socket;
+      fn(200);
+      oldSocket.emit("booted","");
+      return;
+    }
+
+    // Check if this socket has already logged in (a re-login)
     socket.get('username', function (err, name) {
       if (name) {
         // already logged in, so switch the name
         var existingSocket = chitters[name];
         delete chitters[name];
         chitters[credentials.username] = existingSocket;
+        socket.set('username', credentials.username);
         io.sockets.emit("switcharoo", {oldname: name, newname: credentials.username });
         fn(200);
       } else {
-        // new login
+        // its a brand spanking new login (by a lurker)
         chitters[credentials.username] = socket; 
         console.log(credentials.username  + " + logged in. Total users: " + Object.keys(chitters).length);
         io.sockets.emit("arrival", {username : credentials.username });

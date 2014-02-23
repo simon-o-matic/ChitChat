@@ -49,6 +49,12 @@ Login: <input id=username type=text> <input id='login' type=button value="Login"
   socket.on('departure', function (data) {
     $("#messages").append("<div><b>" + data.username + "</b> has left the building.");
   });
+  socket.on('switcharoo', function (data) {
+    $("#messages").append("<div><b>" + data.oldname + "</b> has switched to " + data.newname);
+  });
+  socket.on('booted', function (data) {
+    $("#messages").append("<div><b>You have been booted from reality. You are now lurking");
+  });
   
   $("#send").click(function (e) {
     socket.emit("message", $("#msg").val());
@@ -56,7 +62,9 @@ Login: <input id=username type=text> <input id='login' type=button value="Login"
   });
   $("#login").click(function (e) {
     socket.emit("login", {username: $("#username").val(), password: prompt('password')}, function (result) {
-      alert(result);
+      if (result != 200) {
+        alert("That login didn't really work so well. Try again?");
+      }
     });
   });
 </script>
