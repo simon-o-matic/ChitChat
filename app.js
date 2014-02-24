@@ -11,7 +11,7 @@ var secrets = {
   'gabe': 'cello',
   'isaac': 'fatty',
   'paddy': 'hawksbeast',
-  'lochy': 'catan'
+  'locky': 'catan'
 }
 
 var chitters = {};
@@ -43,7 +43,6 @@ io.sockets.on('connection', function (socket) {
       chitters[credentials.username] = socket;
       fn(200);
       oldSocket.emit("booted","");
-      return;
     }
 
     // Check if this socket has already logged in (a re-login)
