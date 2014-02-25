@@ -18,6 +18,7 @@ var chitters = {};
 
 io.sockets.on('connection', function (socket) {
   socket.broadcast.emit("lurker", socket.handshake.address.address + ":" + socket.handshake.address.port);
+  socket.emit("lipsters", Object.keys(chitters));
 
   socket.on('message', function (data) {
   	socket.get('username', function (err, name) {
@@ -75,10 +76,11 @@ io.sockets.on('connection', function (socket) {
     });
 	});
 
-  // helper function to send message to all "logged in" users
-  function broadcast(channel, message) {
-    for (var s in chitters) {
-      chitters[s].emit(channel, message)
-    }
-  }
 });
+
+// helper function to send message to all "logged in" users
+function broadcast(channel, message) {
+  for (var s in chitters) {
+    chitters[s].emit(channel, message)
+  }
+}
