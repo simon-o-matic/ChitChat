@@ -2,6 +2,7 @@
 <head>
   <script src="/socket.io/socket.io.js"></script>
   <script src="jquery-2.1.0.min.js"></script>
+  <script src="lip.js"></script>
 
   <style>
     #messages {
@@ -9,7 +10,8 @@
       width: 70%;
       height: 80%;
       border-style: dashed;
-      border-color: black
+      border-color: black;
+      overflow:scroll
     }
 
     #lipsters {
@@ -32,13 +34,13 @@
 
 <body>
 
-<div id=login_page>
+<div id='login_page'>
 Login: <input id='username' type=text> <input id='login' type=button value="Login">
 </div>
-<input id='message' size=50 type=text> <input id='send' type=button value="Send">
 
 <div id='messages'></div>
 <div id='lipsters'></div>
+<input id='message' size=50 type=text> <input id='send' type=button value="Send">
 
 <script>
     var socket = io.connect('http://localhost');
