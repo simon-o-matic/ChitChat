@@ -2,9 +2,25 @@
 <head>
   <script src="/socket.io/socket.io.js"></script>
   <script src="jquery-2.1.0.min.js"></script>
-  <script src="lip.js"></script>
 
   <style>
+    .page {
+      width:100%;
+      height: 100%;
+      display: none;
+      border-width: 2px;
+      border-style: groove;
+      border-radius: 3px;
+      border-color: red;
+    }
+
+    .login_page {
+      top: 40%;
+    }
+
+    .stretch {
+      height: 40%;
+    }
     #messages {
       border: 5px;
       width: 70%;
@@ -19,6 +35,7 @@
       background-color: orange;   
       width: 100%;
       height: 500px;  
+      display: none;
     }
 
     #message {
@@ -34,73 +51,22 @@
 
 <body>
 
-<div id='login_page'>
-Login: <input id='username' type=text> <input id='login' type=button value="Login">
+<div class='login_page page'>
+  <div class='stretch'>&nbsp;</div>
+  <div id='login_page'>
+  Login: <input id='username' type=text> <input id='login' type=button value="Login">
+  </div>
+  <div class='stretch'>&nbsp;</div>
 </div>
 
-<div id='messages'></div>
+<div class='chat_page page'>
+  <div id='messages'></div>
+  <input id='message' size=50 type=text> <input id='send' type=button value="Send">
+</div>
+
 <div id='lipsters'></div>
-<input id='message' size=50 type=text> <input id='send' type=button value="Send">
 
-<script>
-    var socket = io.connect('http://localhost');
-
-    //
-    // Message arrival handlers
-    //
-    socket.on('message', function (data) {
-       $("#messages").append("<div><b>" + data.username + "</b>>> " + data.message + "</div>");
-    });
-    socket.on('arrival', function (data) {
-        $("#messages").append("<div><b>" + data.username + "</b> has swankered in for a chat.");
-    });
-    socket.on('lurker', function (data) {
-        $("#messages").append("<div>There is a new lurker in the house... (" + data + ")</div>");
-    });
-    socket.on('departure', function (data) {
-        $("#messages").append("<div><b>" + data.username + "</b> has left the building.");
-    });
-    socket.on('switcharoo', function (data) {
-        $("#messages").append("<div><b>" + data.oldname + "</b> has switched to " + data.newname);
-    });
-    socket.on('booted', function (data) {
-        $("#messages").append("<div><b>You have been booted from reality. You are now lurking");
-    });
-    socket.on('lipsters', function(data) {
-        var lipsters = "";
-        for (var i = 0; i<data.length; i++) {
-            lipsters +=  "<p>" + data[i] + "</p>" + "</br>";
-        }
-        $("#lipsters").html(lipsters);
-    })
-
-    //
-    // Click handlers
-    //
-    $("#send").click(function (e) {
-        sendMessage($("#message").val()); 
-    });
-    $("#login").click(function (e) {
-        socket.emit("login", {username: $("#username").val(), password: prompt('password')}, function (result) {
-          if (result != 200) {
-            alert("That login didn't really work so well. Try again?");
-          }
-        });
-    });
-    $("#message").keypress(function (e) {
-        if (e.keyCode == 13) {
-          sendMessage($("#message").val());
-        }
-    });
-
-    //
-    // Helpers
-    //
-    function sendMessage(message) {
-        socket.emit("message", message);
-        $("#message").val("");
-    }
-</script>
+<script src="lip.js"></script>
 
 </body>
 </html>

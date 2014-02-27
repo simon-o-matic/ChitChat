@@ -1,5 +1,7 @@
 var socket = io.connect('http://localhost');
 
+$(".login_page").show();
+
 //
 // Message arrival handlers
 //
@@ -35,13 +37,11 @@ socket.on('lipsters', function(data) {
 $("#send").click(function (e) {
     sendMessage($("#message").val()); 
 });
-$("#login").click(function (e) {
-    socket.emit("login", {username: $("#username").val(), password: prompt('password')}, function (result) {
-      if (result != 200) {
-        alert("That login didn't really work so well. Try again?");
-      }
-    });
+$("#login").click(login);
+$("#username").keypress(function (e) {
+    e.keyCode == 13 && login();
 });
+
 $("#message").keypress(function (e) {
     if (e.keyCode == 13) {
       sendMessage($("#message").val());
@@ -54,4 +54,15 @@ $("#message").keypress(function (e) {
 function sendMessage(message) {
     socket.emit("message", message);
     $("#message").val("");
+}
+
+function login() {
+    socket.emit("login", {username: $("#username").val(), password: prompt('password')}, function (result) {
+      if (result != 200) {
+        alert("That login didn't really work so well. Try again?");
+      } else {
+        $(".login_page").hide();
+        $(".chat_page").show();
+      }
+    });    
 }

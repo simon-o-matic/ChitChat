@@ -33,7 +33,10 @@ io.sockets.on('connection', function (socket) {
     console.log("login of " + credentials.username + " from " + socket.handshake.address.address + ":" + socket.handshake.address.port);
     
     // check for valid credentials
-    if (secrets[credentials.username] != credentials.password) {
+    if (!credentials.username || !credentials.password) {
+      fn(403);
+      return;
+    } else if (secrets[credentials.username] != credentials.password) {
       fn(403);
       return;
     }
