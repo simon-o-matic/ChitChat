@@ -48,6 +48,10 @@ $("#message").keypress(function (e) {
     }
 });
 
+$("#messages").bind("DOMSubtreeModified", function() {
+    $("#messages").scrollTop($("#messages")[0].scrollHeight);
+});
+
 //
 // Helpers
 //
