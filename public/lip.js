@@ -41,6 +41,9 @@ $("#login").click(login);
 $("#username").keypress(function (e) {
     e.keyCode == 13 && login();
 });
+$("#password").keypress(function (e) {
+    e.keyCode == 13 && login();
+});
 
 $("#message").keypress(function (e) {
     if (e.keyCode == 13) {
@@ -61,7 +64,7 @@ function sendMessage(message) {
 }
 
 function login() {
-    socket.emit("login", {username: $("#username").val(), password: prompt('password')}, function (result) {
+    socket.emit("login", {username: $("#username").val(), password: $("#password").val()}, function (result) {
       if (result != 200) {
         alert("That login didn't really work so well. Try again?");
       } else {

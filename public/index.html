@@ -14,13 +14,10 @@
       border-color: red;
     }
 
-    .login_page {
-      top: 40%;
-    }
-
     .stretch {
       height: 40%;
     }
+
     #messages {
       width: 100%;
       height: 90%;
@@ -35,8 +32,10 @@
       height: 500px;  
       display: none;
     }
-    .login_page {
-        text-align: center;
+    .sub_login_page {
+        width: 70%;
+        text-align: right;
+        /* border: 2px black dotted;  */
     }
     .chat_page {
         text-align: center;
@@ -49,20 +48,37 @@
       background-color: wheat;
     }
 
+    .lip_logo {
+      font-style: normal;
+      font-family: sans-serif;
+      color: red;
+      font-size: 10pt
+    }
+
+    .lipservice {
+      font-style: normal;
+      font-family: sans-serif;
+      color: red;
+      font-size: 40pt
+    }
   </style>
 </head>
 
 <body>
 
 <div class='login_page page'>
-  <div class='stretch'>&nbsp;</div>
-  <div id='login_page'>
-  Login: <input id='username' type=text> <input id='login' type=button value="Login">
+  <div class='sub_login_page'>
+    <div class='stretch'>&nbsp;</div>
+    <div class="lipservice">Lip Service</div>
+    Username: <input id='username' type=text> <br/>
+    Password: <input id='password' type=password>  <br/>
+    <input id='login' type=button value="Login">
+    <div class='stretch'>&nbsp;</div>
   </div>
-  <div class='stretch'>&nbsp;</div>
 </div>
 
 <div class='chat_page page'>
+<!--  <div class='lip_logo'>Lip Service</div> -->
   <div id='messages'></div>
   <input id='message' size=50 type=text> <input id='send' type=button value="Send">
 </div>
