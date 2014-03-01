@@ -4,7 +4,8 @@
   "description": "the best chat program eva. full stop.",
   "main": "app.js",
   "dependencies": {
-    "express": "~3.4.8"
+    "express": "~3.4.8",
+    "socket.io": "~0.9.16"
   },
   "devDependencies": {},
   "scripts": {
