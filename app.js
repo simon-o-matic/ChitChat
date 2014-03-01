@@ -3,15 +3,19 @@ var express = require('express')
   , server  = require('http').createServer(app)
   , io      = require('socket.io').listen(server);
 
-server.listen(80);
+var port = process.env.PORT || 3000
+server.listen(port);
 
 app.use(express.static(__dirname + '/public'));
+
+
 
 var secrets = {
   'gabe': 'cello',
   'isaac': 'fatty',
-  'paddy': 'hawksbeast',
-  'locky': 'catan'
+  'paddy': 'gohawks',
+  'locky': 'catan',
+  'shimmie': 'yowzer'
 }
 
 var chitters = {};
